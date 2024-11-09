@@ -15,7 +15,7 @@
 
     <application
         android:name="com.ddanddan.watch.application.WatchApp"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/ic_watch_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@android:style/Theme.DeviceDefault"
