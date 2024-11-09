@@ -1,0 +1,183 @@
+[versions]
+# AGP & Kotlin Versions
+agpVersion = "8.6.1"
+javapoetVersion = "1.13.0"
+kotlinVersion = "1.9.0"
+kotlinGradlePluginVersion = "1.9.25"
+
+# AndroidX
+coreKtxVersion = "1.13.1"
+appCompatVersion = "1.7.0"
+materialDesignVersion = "1.12.0"
+constraintLayoutVersion = "2.1.4"
+hiltVersion = "2.46.1"
+activityKtxVersion = "1.7.2"
+fragmentKtxVersion = "1.5.7"
+lifecycleVersion = "2.6.1"
+
+# Android & Jetpack Versions
+androidxActivityVersion = "1.9.2"
+androidxDatastoreVersion = "1.1.1"
+androidxLifecycleVersion = "2.8.6"
+androidxWearComposeVersion = "1.4.0"
+androidxWearTilesVersion = "1.0.1"
+androidxWearWatchfaceVersion = "1.0.1"
+androidxWorkVersion = "2.9.1"
+
+# Compose Versions
+composeVersion = "1.7.3"
+composeCompilerVersion = "1.5.2"
+
+# Google Play & Health Services
+playServicesWearableVersion = "18.2.0"
+healthServicesVersion = "1.0.0-rc02"
+
+# Coroutine & Kotlin Libraries
+coroutinesAndroidVersion = "1.7.1"
+kotlinSerializationJsonVersion = "1.5.1"
+kotlinDateTimeVersion = "0.4.0"
+serializationVersion = "1.8.10"
+
+# Accompanist & Misc Libraries
+accompanistPermissionsVersion = "0.36.0"
+guavaVersion = "33.3.1-android"
+concurrentFuturesVersion = "1.2.0"
+androidLintGradleVersion = "31.7.0"
+ktlintVersion = "0.46.1"
+
+# Hilt Versions
+hiltCommonVersion = "1.2.0"
+hiltWorkManagerVersion = "1.0.0"
+hiltComposeVersion = "1.0.0"
+
+# Network & Logging Versions
+retrofitVersion = "2.9.0"
+kotlinSerializationConverterVersion = "1.0.0"
+okHttpVersion = "4.11.0"
+timberVersion = "5.0.1"
+gsonVersion = "2.10.1"
+
+gradlePlugin = "8.1.2"
+
+# Test
+junitVersion = "4.13.2"
+espressoVersion = "3.3.0"
+androidTestVersion = "1.1.2"
+
+
+[libraries]
+# gradle
+hilt-gradle = { group = "com.google.dagger", name = "hilt-android-gradle-plugin", version.ref = "hiltVersion" }
+
+# Test
+javapoet = { module = "com.squareup:javapoet", version.ref = "javapoetVersion" }
+jUnit = { group = "junit", name = "junit", version.ref = "junitVersion" }
+androidTest = { group = "androidx.test.ext", name = "junit", version.ref = "androidTestVersion" }
+espresso = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoVersion" }
+
+# Google
+materialDesign = { group = "com.google.android.material", name = "material", version.ref = "materialDesignVersion" }
+gson = { group = "com.google.code.gson", name = "gson", version.ref = "gsonVersion" }
+
+# Network Libraries
+retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofitVersion" }
+retrofit-converter = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofitVersion" }
+retrofit-json-converter = { group = "com.jakewharton.retrofit", name = "retrofit2-kotlinx-serialization-converter", version.ref = "kotlinSerializationConverterVersion" }
+okhttp-Bom = { group = "com.squareup.okhttp3", name = "okhttp-bom", version.ref = "okHttpVersion" }
+okhttp = { group = "com.squareup.okhttp3", name = "okhttp" }
+okhttp-logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okHttpVersion" }
+timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timberVersion" }
+
+# Play Services & Health Services Libraries
+play-services-wearable = { group = "com.google.android.gms", name = "play-services-wearable", version.ref = "playServicesWearableVersion" }
+androidx-health-services = { module = "androidx.health:health-services-client", version.ref = "healthServicesVersion" }
+
+# Accompanist Libraries
+accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanistPermissionsVersion" }
+
+# AndroidX & Jetpack Libraries
+androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidxActivityVersion" }
+androidx-datastore = { module = "androidx.datastore:datastore-preferences", version.ref = "androidxDatastoreVersion" }
+androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "androidxLifecycleVersion" }
+androidx-work = { module = "androidx.work:work-runtime", version.ref = "androidxWorkVersion" }
+androidx-work-ktx = { module = "androidx.work:work-runtime-ktx", version.ref = "androidxWorkVersion" }
+
+# Compose Libraries
+compose-material-icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "composeVersion" }
+compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "composeVersion" }
+compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "composeVersion" }
+compose-compiler = { module = "androidx.compose.compiler:compiler", version.ref = "composeCompilerVersion" }
+wear-compose-foundation = { module = "androidx.wear.compose:compose-foundation", version.ref = "androidxWearComposeVersion" }
+wear-compose-material = { module = "androidx.wear.compose:compose-material", version.ref = "androidxWearComposeVersion" }
+
+# Google Libraries
+guava = { module = "com.google.guava:guava", version.ref = "guavaVersion" }
+concurrent-futures = { module = "androidx.concurrent:concurrent-futures-ktx", version.ref = "concurrentFuturesVersion" }
+
+# Kotlin Libraries
+kotlin = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlinVersion" }
+kotlin-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutinesAndroidVersion" }
+kotlin-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinSerializationJsonVersion" }
+kotlin-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlinDateTimeVersion" }
+
+# Hilt Libraries
+hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hiltVersion" }
+hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hiltVersion" }
+hilt-common = { group = "androidx.hilt", name = "hilt-common", version.ref = "hiltCommonVersion" }
+hilt-workmanager = { group = "androidx.hilt", name = "hilt-work", version.ref = "hiltWorkManagerVersion" }
+hilt-workmanager-compiler = { group = "androidx.hilt", name = "hilt-compiler", version.ref = "hiltWorkManagerVersion" }
+hilt-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hiltComposeVersion" }
+
+# AndroidX
+androidx-coreKtx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtxVersion" }
+androidx-appCompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appCompatVersion" }
+androidx-constraintLayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintLayoutVersion" }
+androidx-activity = { group = "androidx.activity", name = "activity-ktx", version.ref = "activityKtxVersion" }
+androidx-fragment = { group = "androidx.fragment", name = "fragment-ktx", version.ref = "fragmentKtxVersion" }
+androidx-lifeCycleKtx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleVersion" }
+androidx-lifeCycleViewModelKtx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycleVersion" }
+androidx-lifeCycleLiveDataKtx = { group = "androidx.lifecycle", name = "lifecycle-livedata-ktx", version.ref = "lifecycleVersion" }
+
+[plugins]
+androidApplication = { id = "com.android.application", version.ref = "gradlePlugin" }
+androidLibrary = { id = "com.android.library", version.ref = "gradlePlugin" }
+androidHilt = { id = "com.google.dagger.hilt.android", version.ref = "hiltVersion" }
+androidKotlin = { id = "org.jetbrains.kotlin.android", version.ref = "kotlinVersion" }
+serialization = {id = 'org.jetbrains.kotlin.plugin.serialization', version.ref = "serializationVersion"}
+
+[bundles]
+kotlin = ["kotlin", "kotlin-coroutines", "kotlin-serialization-json", "kotlin-datetime"]
+okhttp = ["okhttp", "okhttp-logging-interceptor"]
+retrofit = ["retrofit", "retrofit-converter"]
+hilt = ["hilt-android", "hilt-common", "hilt-compose", "hilt-workmanager", "hilt-workmanager-compiler"]
+
+composeUI = [
+    "androidx-activity-compose",
+    "compose-ui-tooling",
+    "compose-ui-tooling-preview",
+    "compose-material-icons-extended"
+]
+
+wearCompose = [
+    "wear-compose-foundation",
+    "wear-compose-material"
+]
+
+androidx = [
+    "androidx-coreKtx",
+    "androidx-appCompat",
+    "androidx-constraintLayout",
+    "androidx-activity",
+    "androidx-fragment",
+    "androidx-lifeCycleKtx",
+    "androidx-lifeCycleLiveDataKtx",
+    "androidx-lifeCycleViewModelKtx"
+]
+
+androidxJetpack = [
+    "androidx-activity-compose",
+    "androidx-datastore",
+    "androidx-lifecycle-viewmodel-compose",
+    "androidx-work",
+    "androidx-work-ktx"
+]
