@@ -1,8 +1,10 @@
 plugins {
-    alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.androidApplication)
+    alias(libs.plugins.androidKotlin)
+    alias(libs.plugins.serialization)
+    alias(libs.plugins.androidHilt)
+    kotlin("kapt")
 }
-
 android {
     namespace = "com.ddanddan.watch"
     compileSdk = 34
@@ -13,7 +15,6 @@ android {
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
-
     }
 
     buildTypes {
@@ -32,9 +33,58 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = libs.versions.composeCompilerVersion.get()
+    }
+
+    buildFeatures {
+        compose = true
+    }
+
+    hilt {
+        enableAggregatingTask = false
+    }
 }
 
 dependencies {
+    implementation(libs.materialDesign)
+    androidTestImplementation(libs.jUnit)
+    androidTestImplementation(libs.espresso)
 
-    implementation(libs.play.services.wearable)
+    // Compose UI dependencies
+    implementation(libs.bundles.composeUI)
+
+    // Wear Compose dependencies
+    implementation(libs.bundles.wearCompose)
+
+    // Health Services
+    implementation(libs.androidx.health.services)
+
+    // Used to bridge between Futures and coroutines
+    implementation(libs.guava)
+    implementation(libs.concurrent.futures)
+
+    // WorkManager dependencies
+    implementation(libs.androidx.work)
+    implementation(libs.androidx.work.ktx)
+
+    // Permissions
+    implementation(libs.accompanist.permissions)
+
+    implementation(libs.bundles.androidx)
+    implementation(libs.bundles.kotlin)
+    implementation(libs.bundles.okhttp)
+    implementation(libs.bundles.retrofit)
+    implementation(libs.bundles.androidxJetpack)
+
+    // Hilt
+    implementation(libs.bundles.hilt)
+    kapt(libs.hilt.compiler)
+
+    implementation(libs.timber)
+}
+
+fun DependencyHandlerScope.kapt(provider: Provider<*>) {
+    "kapt"(provider)
 }
