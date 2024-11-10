@@ -1,6 +1,5 @@
-package com.ddanddan.ui.compose
+package com.ddanddan.watch.presentation
 
-import androidx.compose.material.Typography
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
@@ -8,7 +7,8 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
-import com.ddanddan.base.R
+import androidx.wear.compose.material.Typography
+import com.ddanddan.watch.R
 
 val Pretendard = FontFamily(
     Font(R.font.pretendard_extrabold, FontWeight.ExtraBold, FontStyle.Normal),

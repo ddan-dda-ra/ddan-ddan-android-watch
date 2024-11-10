@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ddanddan.watch.theme
+package com.ddanddan.watch.presentation.theme
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
