@@ -41,7 +41,7 @@ fun CalorieProgressBar(
     calories: Double,
     goalCalories: Double?,
     modifier: Modifier = Modifier,
-    strokeWidth: Dp = 24.dp // Stroke 굵기를 매개변수로 설정
+    strokeWidth: Dp = 24.dp
 ) {
     val displayedCalories = calories.takeIf { !it.isNaN() } ?: 0.0
     val progress = calculateProgress(displayedCalories, goalCalories)
@@ -74,26 +74,26 @@ fun CalorieProgressBar(
 
 @Composable
 fun CircularProgressBar(progress: Double, strokeWidth: Dp) {
+    val colorPalette = DDanDDanColorPalette.current
+
     Canvas(modifier = Modifier.fillMaxSize()) {
         val sweepAngle = 360 * progress.toFloat()
-        val strokePx = strokeWidth.toPx() // Dp 값을 Px로 변환
+        val strokePx = strokeWidth.toPx()
 
-        // 배경 원 (회색 원)
         drawArc(
-            color = Color.Gray,
+            color = colorPalette.elevation_color_elevation_level02,
             startAngle = 0f,
             sweepAngle = 360f,
             useCenter = false,
             style = Stroke(width = strokePx)
         )
 
-        // 진행 원 (채워지는 부분, 모서리 둥글지 않음)
         drawArc(
-            color = Color.Blue,
+            color = colorPalette.color_graphic_pink,
             startAngle = -90f, // 12시 방향 시작
             sweepAngle = sweepAngle,
             useCenter = false,
-            style = Stroke(width = strokePx, cap = StrokeCap.Butt)
+            style = Stroke(width = strokePx, cap = StrokeCap.Butt) //모서리 둥글지 않게 설정
         )
     }
 }
@@ -105,7 +105,7 @@ fun CalorieImage() {
         contentDescription = "Calorie Image",
         modifier = Modifier
             .fillMaxSize()
-            .padding(33.dp) // 이미지가 프로그레스바 안쪽에 맞게 위치하도록 패딩 추가
+            .padding(33.dp)
     )
 }
 
@@ -119,7 +119,6 @@ fun CalorieText(displayedCalories: Double) {
             text = displayedCalories.roundToInt().toString(),
             fontSize = 48.sp,
             fontFamily = NeoDgm,
-            style = MaterialTheme.typography.caption3,
             color = Color.White,
             modifier = Modifier.alignByBaseline()
         )
@@ -128,7 +127,6 @@ fun CalorieText(displayedCalories: Double) {
             text = "kcal",
             fontSize = 16.sp,
             fontFamily = NeoDgm,
-            style = MaterialTheme.typography.caption3,
             color = Color.White,
             modifier = Modifier.alignByBaseline()
         )

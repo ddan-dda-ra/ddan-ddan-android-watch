@@ -11,6 +11,7 @@ val Pink80 = Color(0xFFEFB8C8)
 val Purple40 = Color(0xFF6650a4)
 val PurpleGrey40 = Color(0xFF625b71)
 val Pink40 = Color(0xFF7D5260)
+
 @Immutable
 data class ColorPalette(
     val color_text_headline_primary: Color = Color.Unspecified,
@@ -88,7 +89,12 @@ data class ColorPalette(
     val elevation_color_elevation_level02: Color = Color.Unspecified,
     val elevation_color_elevation_alternative: Color = Color.Unspecified,
 
-    val color_background: Color = Color.Unspecified
+    val color_background: Color = Color.Unspecified,
+
+    val color_graphic_pink: Color = Color.Unspecified,
+    val color_graphic_green: Color = Color.Unspecified,
+    val color_graphic_blue: Color = Color.Unspecified,
+    val color_graphic_purple: Color = Color.Unspecified,
 )
 
 
@@ -168,8 +174,14 @@ val ColorPalette_Dark = ColorPalette(
     DDanGreen200 = Color(color = 0xFFA1F5D5),
     DDanGreen100 = Color(color = 0xFFD0FAEA),
 
-    GreyWhite = Color(color = 0xFF1111111)
-)
+    GreyWhite = Color(color = 0xFF1111111),
+
+    color_graphic_pink = Color(color = 0xFFFD85FF),
+    color_graphic_green = Color(color = 0xFF46F8A2),
+    color_graphic_blue = Color(color = 0xFF9B6CFF),
+    color_graphic_purple = Color(color = 0xFF4E95FF),
+
+    )
 
 val ColorPalette_Light = ColorPalette(
     //headline
@@ -254,6 +266,11 @@ val ColorPalette_Light = ColorPalette(
     DDanGreen100 = Color(color = 0xFFD6FBED),
 
     GreyWhite = Color(color = 0xFFFFFFFF), // grey white
+
+    color_graphic_pink = Color(color = 0xFFFD85FF),
+    color_graphic_green = Color(color = 0xFF46F8A2),
+    color_graphic_blue = Color(color = 0xFF9B6CFF),
+    color_graphic_purple = Color(color = 0xFF4E95FF),
 )
 
 val DDanDDanColorPalette = staticCompositionLocalOf { ColorPalette() }
