@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.wear.compose.material.Icon
 import androidx.wear.compose.material.Text
 import com.ddanddan.watch.R
-import com.ddanddan.watch.theme.PassiveDataTheme
+import com.ddanddan.watch.presentation.theme.PassiveDataTheme
 
 @Composable
 fun NotSupportedScreen() {
