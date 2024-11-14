@@ -1,3 +1,5 @@
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.androidKotlin)
@@ -15,6 +17,18 @@ android {
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
+
+        buildConfigField(
+            "String",
+            "BASE_URL",
+            gradleLocalProperties(rootDir).getProperty("base.url"),
+        )
+
+        buildConfigField(
+            "String",
+            "AES_KEY",
+            gradleLocalProperties(rootDir).getProperty("AES_KEY"),
+        )
     }
 
     buildTypes {
@@ -39,6 +53,7 @@ android {
     }
 
     buildFeatures {
+        buildConfig = true
         compose = true
     }
 
