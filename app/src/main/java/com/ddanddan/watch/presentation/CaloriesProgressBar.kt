@@ -27,9 +27,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.Text
-import com.ddanddan.watch.R
+import com.ddanddan.ddanddan.R
 import kotlin.math.roundToInt
 
 enum class DisplayState {

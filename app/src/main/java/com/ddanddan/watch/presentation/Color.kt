@@ -122,9 +122,9 @@ val ColorPalette_Dark = ColorPalette(
     color_text_button_secondary_default = Color(color = 0xFF13E695),
     color_text_button_alternative = Color(color = 0xFFFFFFFF),
 
-    color_outline_level01_default =  Color(color =0xFF212121),
-    color_outline_level01_active =  Color(color =0xFF13E695),
-    color_outline_level01_error =  Color(color =0xFFFC4E6D),
+    color_outline_level01_default = Color(color = 0xFF212121),
+    color_outline_level01_active = Color(color = 0xFF13E695),
+    color_outline_level01_error = Color(color = 0xFFFC4E6D),
     color_outline_level02 = Color(color = 0xFF292929),
     color_outline_level03 = Color(color = 0xFF333333),
     color_outline_level04_active = Color(color = 0xFFF5F5F5),
@@ -212,9 +212,9 @@ val ColorPalette_Light = ColorPalette(
     color_text_button_alternative = Color(color = 0xFF212121),
 
     //outline
-    color_outline_level01_default =  Color(color =0xFFF5F5F5),
-    color_outline_level01_active =  Color(color =0xFF33EDA7),
-    color_outline_level01_error =  Color(color =0xFFFC4E6D),
+    color_outline_level01_default = Color(color = 0xFFF5F5F5),
+    color_outline_level01_active = Color(color = 0xFF33EDA7),
+    color_outline_level01_error = Color(color = 0xFFFC4E6D),
     color_outline_level02 = Color(color = 0xFFF0F0F0),
     color_outline_level03 = Color(color = 0xFFE9E9E9),
     color_outline_level04_active = Color(color = 0xFF212121),

@@ -6,11 +6,11 @@ plugins {
     kotlin("kapt")
 }
 android {
-    namespace = "com.ddanddan.watch"
+    namespace = "com.ddanddan.ddanddan"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.ddanddan.watch"
+        applicationId = "com.ddanddan.ddanddan"
         minSdk = 30
         targetSdk = 34
         versionCode = 1
@@ -49,6 +49,8 @@ android {
 
 dependencies {
     implementation(libs.materialDesign)
+    implementation(libs.play.services.wearable)
+    implementation(libs.androidx.material3.android)
     androidTestImplementation(libs.jUnit)
     androidTestImplementation(libs.espresso)
 

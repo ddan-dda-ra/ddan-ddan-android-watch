@@ -8,7 +8,7 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.wear.compose.material.Typography
-import com.ddanddan.watch.R
+import com.ddanddan.ddanddan.R
 
 val Pretendard = FontFamily(
     Font(R.font.pretendard_extrabold, FontWeight.ExtraBold, FontStyle.Normal),
@@ -34,66 +34,66 @@ val Typography = Typography(
 )
 
 data class Type(
-    val SubTitle1:  TextStyle = TextStyle(
+    val SubTitle1: TextStyle = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight(600),
-        fontSize =  14.sp,
+        fontSize = 14.sp,
         lineHeight = 20.sp,
     ),
 
     val HeadLine1: TextStyle = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight(700),
-        fontSize =  32.sp,
+        fontSize = 32.sp,
         lineHeight = 36.sp,
     ),
 
     val HeadLine2: TextStyle = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight(700),
-        fontSize =  28.sp,
+        fontSize = 28.sp,
         lineHeight = 36.sp,
     ),
 
     val HeadLine3: TextStyle = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight(700),
-        fontSize =  20.sp,
+        fontSize = 20.sp,
         lineHeight = 28.sp,
     ),
 
     val HeadLine4: TextStyle = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight(700),
-        fontSize =  20.sp,
+        fontSize = 20.sp,
         lineHeight = 28.sp,
     ),
 
     val HeadLine5: TextStyle = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight(700),
-        fontSize =  18.sp,
+        fontSize = 18.sp,
         lineHeight = 24.sp,
     ),
 
     val HeadLine6: TextStyle = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight(600),
-        fontSize =  16.sp,
+        fontSize = 16.sp,
         lineHeight = 22.sp,
     ),
 
     val HeadLine7: TextStyle = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight(500),
-        fontSize =  16.sp,
+        fontSize = 16.sp,
         lineHeight = 22.sp,
     ),
 
     val Body1: TextStyle = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight(400),
-        fontSize =  16.sp,
+        fontSize = 16.sp,
         lineHeight = 24.sp,
         letterSpacing = (-0.5).sp
     ),
@@ -101,21 +101,21 @@ data class Type(
     val Body2: TextStyle = TextStyle(
         fontFamily = Pretendard,
         fontWeight = FontWeight(400),
-        fontSize =  14.sp,
+        fontSize = 14.sp,
         lineHeight = 22.sp,
     ),
 
     val Body3: TextStyle = TextStyle(
         fontFamily = Pretendard,
         fontWeight = FontWeight(400),
-        fontSize =  12.sp,
+        fontSize = 12.sp,
         lineHeight = 20.sp,
     ),
 
     val Caption1: TextStyle = TextStyle(
         fontFamily = Pretendard,
         fontWeight = FontWeight(600),
-        fontSize =  11.sp,
+        fontSize = 11.sp,
         lineHeight = 16.sp,
         letterSpacing = (-0.5).sp
     ),
@@ -123,8 +123,9 @@ data class Type(
     val Caption2: TextStyle = TextStyle(
         fontFamily = Pretendard,
         fontWeight = FontWeight(500),
-        fontSize =  10.sp,
+        fontSize = 10.sp,
         lineHeight = 12.sp,
     ),
 )
+
 val DDanDDanTypo = staticCompositionLocalOf { Type() }
