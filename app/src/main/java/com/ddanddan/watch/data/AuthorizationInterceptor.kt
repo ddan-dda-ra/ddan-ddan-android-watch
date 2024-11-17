@@ -11,20 +11,24 @@ import okhttp3.Response
 import javax.inject.Inject
 
 class AuthorizationInterceptor @Inject constructor(
-    private val dataStore: DataStore<Preferences>
+//    private val dataStore: DataStore<Preferences>
 ) : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {
-        val accessToken = runBlocking {
-            dataStore.data
-                .map { preferences -> preferences[PreferencesKeys.ACCESS_TOKEN_KEY] ?: "" }
-                .first()
-        }
+//        val accessToken = runBlocking {
+//            dataStore.data
+//                .map { preferences -> preferences[PreferencesKeys.ACCESS_TOKEN_KEY] ?: TEST_TOKEN }
+//                .first()
+//        }
 
         val request = chain.request().newBuilder()
-            .addHeader("Authorization", "Bearer $accessToken")
+            .addHeader("Authorization", "Bearer $TEST_TOKEN")
             .build()
 
         return chain.proceed(request)
+    }
+
+    companion object {
+        const val TEST_TOKEN = "eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiYWxnIjoiZGlyIiwiZW5jIjoiQTEyOENCQy1IUzI1NiJ9..oTa1EttP0vdSsy_qlKSPOw.FRN058hnNWtPn_ePGZB9jRwBgAAt9i7fKRxGE7jxHioGgsZrmX5KntpITpflmied.G5xaLJxm1Su_3ZRK5h_Hsg"
     }
 }
