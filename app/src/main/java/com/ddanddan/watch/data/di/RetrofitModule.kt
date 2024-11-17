@@ -1,5 +1,7 @@
 package com.ddanddan.watch.data.di
 
+import com.ddanddan.ddanddan.BuildConfig
+import com.ddanddan.watch.data.AuthorizationInterceptor
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -16,7 +18,10 @@ object RetrofitModule {
 
     @Provides
     @Singleton
-    fun provideOkHttpClient(): OkHttpClient = OkHttpClient.Builder()
+    fun provideOkHttpClient(
+        authorizationInterceptor: AuthorizationInterceptor,
+    ): OkHttpClient = OkHttpClient.Builder()
+        .addInterceptor(authorizationInterceptor)
         .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
         .build()
 
@@ -24,7 +29,7 @@ object RetrofitModule {
     @Singleton
     fun provideRetrofit(client: OkHttpClient): Retrofit {
         return Retrofit.Builder()
-            .baseUrl("https://api.unsplash.com") //todo - 수정 예정
+            .baseUrl(BuildConfig.BASE_URL)
             .client(client)
             .addConverterFactory(GsonConverterFactory.create())
             .build()

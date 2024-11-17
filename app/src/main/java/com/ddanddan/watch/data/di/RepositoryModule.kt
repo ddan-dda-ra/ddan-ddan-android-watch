@@ -1,7 +1,9 @@
 package com.ddanddan.watch.data.di
 
+import com.ddanddan.watch.data.repository.DdanDdanRepositoryImpl
 import com.ddanddan.watch.data.repository.HealthServicesRepositoryImpl
 import com.ddanddan.watch.data.repository.PassiveDataRepositoryImpl
+import com.ddanddan.watch.domain.repository.DdanDdanRepository
 import com.ddanddan.watch.domain.repository.HealthServicesRepository
 import com.ddanddan.watch.domain.repository.PassiveDataRepository
 import dagger.Binds
@@ -21,4 +23,8 @@ interface RepositoryModule {
     @Singleton
     @Binds
     fun bindPassiveDataRepository(passiveDataRepositoryImpl: PassiveDataRepositoryImpl): PassiveDataRepository
+
+    @Singleton
+    @Binds
+    fun bindDdanDdanRepository(ddanddanRepositoryImpl: DdanDdanRepositoryImpl): DdanDdanRepository
 }
