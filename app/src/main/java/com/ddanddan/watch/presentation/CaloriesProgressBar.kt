@@ -1,8 +1,5 @@
 package com.ddanddan.watch.presentation
 
-/**
- * 이미지와 텍스트로 칼로리 값을 표시합니다.
- */
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -22,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -29,6 +27,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.wear.compose.material.Text
 import com.ddanddan.ddanddan.R
+import com.ddanddan.watch.domain.model.MainPet
+import com.ddanddan.watch.util.PetUtils
 import kotlin.math.roundToInt
 
 enum class DisplayState {
@@ -39,13 +39,14 @@ enum class DisplayState {
 fun CalorieProgressBar(
     calories: Double,
     goalCalories: Double?,
+    mainPet: MainPet,
     modifier: Modifier = Modifier,
     strokeWidth: Dp = 24.dp
 ) {
     val displayedCalories = calories.takeIf { !it.isNaN() } ?: 0.0
     val progress = calculateProgress(displayedCalories, goalCalories)
 
-    var displayState by remember { mutableStateOf(DisplayState.TEXT) }
+    var displayState by remember { mutableStateOf(DisplayState.IMAGE) }
 
     Box(
         contentAlignment = Alignment.Center,
@@ -62,13 +63,27 @@ fun CalorieProgressBar(
 
         when (displayState) {
             DisplayState.IMAGE -> {
-                CalorieImage()
+                PetImage(mainPet)
             }
+
             DisplayState.TEXT -> {
                 CalorieText(displayedCalories)
             }
         }
     }
+}
+
+@Composable
+fun PetImage(mainPet: MainPet) {
+    val resourceId = PetUtils.getDrawableResourceId(mainPet)
+
+    Image(
+        painter = painterResource(id = resourceId),
+        contentDescription = "Pet Image",
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(33.dp)
+    )
 }
 
 @Composable
@@ -80,7 +95,7 @@ fun CircularProgressBar(progress: Double, strokeWidth: Dp) {
         val strokePx = strokeWidth.toPx()
 
         drawArc(
-            color = colorPalette.elevation_color_elevation_level02,
+            color = Color.Gray, //todo - 색상 수정
             startAngle = 0f,
             sweepAngle = 360f,
             useCenter = false,
@@ -88,24 +103,13 @@ fun CircularProgressBar(progress: Double, strokeWidth: Dp) {
         )
 
         drawArc(
-            color = colorPalette.color_graphic_pink,
+            color = Color.Green,
             startAngle = -90f, // 12시 방향 시작
             sweepAngle = sweepAngle,
             useCenter = false,
-            style = Stroke(width = strokePx, cap = StrokeCap.Butt) //모서리 둥글지 않게 설정
+            style = Stroke(width = strokePx, cap = StrokeCap.Butt)
         )
     }
-}
-
-@Composable
-fun CalorieImage() {
-    Image(
-        painter = painterResource(id = R.drawable.ic_cat_pink_lev5),
-        contentDescription = "Calorie Image",
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(33.dp)
-    )
 }
 
 @Composable
@@ -142,15 +146,24 @@ private fun calculateProgress(calories: Double, goal: Double?): Double {
 @Preview(
     showBackground = true,
     backgroundColor = 0xFF000000,
-    widthDp = 200,
-    heightDp = 200
+    widthDp = 300,
+    heightDp = 300
 )
 @Composable
 fun PreviewCalorieProgressBar() {
+    val sampleCalories = 750.0
+    val sampleGoalCalories = 1000.0
+    val sampleMainPet = MainPet(
+        expPercent = 50.0,
+        id = "1",
+        level = 3,
+        type = "CAT"
+    )
+
     CalorieProgressBar(
-        calories = 750.0,
-        goalCalories = 1000.0,
-        modifier = Modifier
-            .fillMaxSize()
+        calories = sampleCalories,
+        goalCalories = sampleGoalCalories,
+        mainPet = sampleMainPet,
+        modifier = Modifier.fillMaxSize()
     )
 }

@@ -5,7 +5,7 @@ import com.ddanddan.watch.domain.model.MainPet
 
 object PetUtils {
 
-    fun getResourceForMainPet(mainPet: MainPet): Int {
+    fun getDrawableResourceId(mainPet: MainPet): Int {
         val petType = PetType.fromType(mainPet.type) ?: return R.drawable.ic_dog_purple_lev1 //todo - null 시 대체할 drawable은 논의 필요
 
         /**
