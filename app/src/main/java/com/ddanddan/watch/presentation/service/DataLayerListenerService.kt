@@ -23,8 +23,8 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class DataLayerListenerService : WearableListenerService() {
 
-    @Inject
-    lateinit var dataStore: DataStore<Preferences>
+//    @Inject
+//    lateinit var dataStore: DataStore<Preferences>
 
 
     override fun onDataChanged(dataEvents: DataEventBuffer) {
@@ -41,12 +41,12 @@ class DataLayerListenerService : WearableListenerService() {
 
     private fun saveAccessToken(token: String?) {
         token?.let {
-            CoroutineScope(Dispatchers.IO).launch {
-                dataStore.edit { preferences ->
-                    preferences[PreferencesKeys.ACCESS_TOKEN_KEY] = it
-                }
-                Timber.tag("DataLayerListenerService").d("Access token saved to DataStore")
-            }
+//            CoroutineScope(Dispatchers.IO).launch {
+//                dataStore.edit { preferences ->
+//                    preferences[PreferencesKeys.ACCESS_TOKEN_KEY] = it
+//                }
+//                Timber.tag("DataLayerListenerService").d("Access token saved to DataStore")
+//            }
         }
     }
 }
