@@ -1,7 +1,9 @@
 package com.ddanddan.watch.util
 
+import androidx.compose.runtime.Composable
 import com.ddanddan.ddanddan.R
 import com.ddanddan.watch.domain.model.MainPet
+import com.ddanddan.watch.presentation.DDanDDanColorPalette
 
 object PetUtils {
 
@@ -40,6 +42,19 @@ object PetUtils {
                 4 -> R.drawable.ic_hamster_green_lev4
                 else -> R.drawable.ic_hamster_green_lev1
             }
+        }
+    }
+
+    @Composable
+    fun getProgressBarColor(mainPet: MainPet): androidx.compose.ui.graphics.Color {
+        val colorPalette = DDanDDanColorPalette.current
+        val petType = PetType.fromType(mainPet.type) ?: return colorPalette.color_graphic_purple
+
+        return when (petType) {
+            PetType.DOG -> colorPalette.color_graphic_purple
+            PetType.PENGUIN -> colorPalette.color_graphic_blue
+            PetType.CAT -> colorPalette.color_graphic_pink
+            PetType.HAMSTER -> colorPalette.color_graphic_green
         }
     }
 }
