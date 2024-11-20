@@ -1,8 +1,5 @@
 package com.ddanddan.watch.presentation
 
-/**
- * 이미지와 텍스트로 칼로리 값을 표시합니다.
- */
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -21,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -28,7 +26,9 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.wear.compose.material.Text
-import com.ddanddan.ddanddan.R
+import com.ddanddan.watch.domain.model.MainPet
+import com.ddanddan.watch.presentation.theme.DDanDDanTheme
+import com.ddanddan.watch.util.PetUtils
 import kotlin.math.roundToInt
 
 enum class DisplayState {
@@ -39,77 +39,79 @@ enum class DisplayState {
 fun CalorieProgressBar(
     calories: Double,
     goalCalories: Double?,
+    mainPet: MainPet,
     modifier: Modifier = Modifier,
     strokeWidth: Dp = 24.dp
 ) {
-    val displayedCalories = calories.takeIf { !it.isNaN() } ?: 0.0
+    val displayedCalories = calculateDisplayedCalories(calories)
     val progress = calculateProgress(displayedCalories, goalCalories)
+    val isGoalAchieved = checkGoalAchieved(displayedCalories, goalCalories)
 
-    var displayState by remember { mutableStateOf(DisplayState.TEXT) }
+    var displayState by remember { mutableStateOf(DisplayState.IMAGE) }
 
     Box(
         contentAlignment = Alignment.Center,
         modifier = modifier
             .fillMaxSize()
-            .clickable {
-                displayState = when (displayState) {
-                    DisplayState.IMAGE -> DisplayState.TEXT
-                    DisplayState.TEXT -> DisplayState.IMAGE
-                }
-            }
+            .clickable { toggleDisplayState(displayState) { newState -> displayState = newState } }
     ) {
-        CircularProgressBar(progress = progress, strokeWidth = strokeWidth)
+        CircularProgressBar(progress = progress, strokeWidth = strokeWidth, mainPet = mainPet)
 
         when (displayState) {
-            DisplayState.IMAGE -> {
-                CalorieImage()
-            }
-            DisplayState.TEXT -> {
-                CalorieText(displayedCalories)
-            }
+            DisplayState.IMAGE -> MainPetImage(mainPet)
+            DisplayState.TEXT -> CalorieInfo(displayedCalories, isGoalAchieved, mainPet)
         }
     }
 }
 
 @Composable
-fun CircularProgressBar(progress: Double, strokeWidth: Dp) {
-    val colorPalette = DDanDDanColorPalette.current
+fun CircularProgressBar(progress: Double, strokeWidth: Dp, mainPet: MainPet) {
+    val progressColor = PetUtils.getProgressBarColor(mainPet)
+    val colors = DDanDDanColorPalette.current
 
     Canvas(modifier = Modifier.fillMaxSize()) {
-        val sweepAngle = 360 * progress.toFloat()
-        val strokePx = strokeWidth.toPx()
-
-        drawArc(
-            color = colorPalette.elevation_color_elevation_level02,
-            startAngle = 0f,
-            sweepAngle = 360f,
-            useCenter = false,
-            style = Stroke(width = strokePx)
-        )
-
-        drawArc(
-            color = colorPalette.color_graphic_pink,
-            startAngle = -90f, // 12시 방향 시작
-            sweepAngle = sweepAngle,
-            useCenter = false,
-            style = Stroke(width = strokePx, cap = StrokeCap.Butt) //모서리 둥글지 않게 설정
-        )
+        drawProgressBarBackground(colors.color_elevation_lev02, strokeWidth.toPx())
+        drawProgressBar(progress, progressColor, strokeWidth.toPx())
     }
 }
 
-@Composable
-fun CalorieImage() {
-    Image(
-        painter = painterResource(id = R.drawable.ic_cat_pink_lev5),
-        contentDescription = "Calorie Image",
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(33.dp)
+private fun DrawScope.drawProgressBarBackground(color: Color, strokeWidth: Float) {
+    drawArc(
+        color = color,
+        startAngle = 0f,
+        sweepAngle = 360f,
+        useCenter = false,
+        style = Stroke(width = strokeWidth)
+    )
+}
+
+private fun DrawScope.drawProgressBar(progress: Double, color: Color, strokeWidth: Float) {
+    drawArc(
+        color = color,
+        startAngle = -90f, // 12시 방향 시작
+        sweepAngle = (360 * progress).toFloat(),
+        useCenter = false,
+        style = Stroke(width = strokeWidth, cap = StrokeCap.Butt) // 모서리 각지게
     )
 }
 
 @Composable
-fun CalorieText(displayedCalories: Double) {
+fun MainPetImage(mainPet: MainPet) {
+    val resourceId = PetUtils.getDrawableResourceId(mainPet)
+
+    Image(
+        painter = painterResource(id = resourceId),
+        contentDescription = "Pet Image",
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(34.dp)
+    )
+}
+
+@Composable
+fun CalorieInfo(displayedCalories: Double, isGoalAchieved: Boolean, mainPet: MainPet) {
+    val textColor = determineTextColor(isGoalAchieved, mainPet)
+
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
@@ -118,7 +120,7 @@ fun CalorieText(displayedCalories: Double) {
             text = displayedCalories.roundToInt().toString(),
             fontSize = 48.sp,
             fontFamily = NeoDgm,
-            color = Color.White,
+            color = textColor,
             modifier = Modifier.alignByBaseline()
         )
         Spacer(modifier = Modifier.width(4.dp))
@@ -126,10 +128,25 @@ fun CalorieText(displayedCalories: Double) {
             text = "kcal",
             fontSize = 16.sp,
             fontFamily = NeoDgm,
-            color = Color.White,
+            color = textColor,
             modifier = Modifier.alignByBaseline()
         )
     }
+}
+
+@Composable
+private fun determineTextColor(isGoalAchieved: Boolean, mainPet: MainPet): Color {
+    return if (isGoalAchieved) {
+        PetUtils.getProgressBarColor(mainPet) // 캐릭터 색상
+    } else {
+        Color.White // 기본 색상
+    }
+}
+
+/** Util functions **/
+
+private fun calculateDisplayedCalories(calories: Double): Double {
+    return calories.takeIf { !it.isNaN() } ?: 0.0
 }
 
 private fun calculateProgress(calories: Double, goal: Double?): Double {
@@ -139,18 +156,44 @@ private fun calculateProgress(calories: Double, goal: Double?): Double {
     }
 }
 
+private fun checkGoalAchieved(calories: Double, goal: Double?): Boolean {
+    return calories >= (goal ?: Double.MAX_VALUE)
+}
+
+private fun toggleDisplayState(
+    currentState: DisplayState,
+    onStateChanged: (DisplayState) -> Unit
+) {
+    val newState = when (currentState) {
+        DisplayState.IMAGE -> DisplayState.TEXT
+        DisplayState.TEXT -> DisplayState.IMAGE
+    }
+    onStateChanged(newState)
+}
+
 @Preview(
     showBackground = true,
     backgroundColor = 0xFF000000,
-    widthDp = 200,
-    heightDp = 200
+    widthDp = 300,
+    heightDp = 300
 )
 @Composable
 fun PreviewCalorieProgressBar() {
-    CalorieProgressBar(
-        calories = 750.0,
-        goalCalories = 1000.0,
-        modifier = Modifier
-            .fillMaxSize()
-    )
+    DDanDDanTheme {
+        val sampleCalories = 750.0
+        val sampleGoalCalories = 1000.0
+        val sampleMainPet = MainPet(
+            expPercent = 50.0,
+            id = "1",
+            level = 4,
+            type = "CAT"
+        )
+
+        CalorieProgressBar(
+            calories = sampleCalories,
+            goalCalories = sampleGoalCalories,
+            mainPet = sampleMainPet,
+            modifier = Modifier.fillMaxSize()
+        )
+    }
 }

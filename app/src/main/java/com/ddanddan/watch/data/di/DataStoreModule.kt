@@ -12,15 +12,15 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
-@Module
-@InstallIn(SingletonComponent::class)
-object DataStoreModule {
-
-    @Provides
-    @Singleton
-    fun provideDataStore(@ApplicationContext context: Context): DataStore<Preferences> {
-        return PreferenceDataStoreFactory.create(
-            produceFile = { context.dataStoreFile("settings.preferences") }
-        )
-    }
-}
+//@Module
+//@InstallIn(SingletonComponent::class)
+//object DataStoreModule {
+//
+//    @Provides
+//    @Singleton
+//    fun provideDataStore(@ApplicationContext context: Context): DataStore<Preferences> {
+//        return PreferenceDataStoreFactory.create(
+//            produceFile = { context.dataStoreFile("DdanDdan") }
+//        )
+//    }
+//}

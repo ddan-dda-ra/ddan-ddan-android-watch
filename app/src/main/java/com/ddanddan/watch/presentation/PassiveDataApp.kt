@@ -1,47 +1,85 @@
 package com.ddanddan.watch.presentation
 
-import android.Manifest
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.wear.compose.material.CircularProgressIndicator
 import androidx.wear.compose.material.Scaffold
+import com.ddanddan.watch.domain.model.MainPet
+import com.ddanddan.watch.domain.model.User
 import com.ddanddan.watch.presentation.theme.PassiveDataTheme
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.isGranted
-import com.google.accompanist.permissions.rememberPermissionState
 
-@OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun PassiveDataApp() {
-    val permissionState = rememberPermissionState(Manifest.permission.ACTIVITY_RECOGNITION)
+fun PassiveDataApp(viewModel: PassiveDataViewModel = hiltViewModel()) {
+    val uiState by viewModel.uiState.collectAsState()
+    val calories by viewModel.caloriesValue.collectAsState()
+    val user by viewModel.userState.collectAsState()
+    val mainPet by viewModel.mainPetState.collectAsState()
+
+    val goalCalories = calculateGoalCalories(user)
 
     PassiveDataTheme {
         Scaffold(
             modifier = Modifier.fillMaxSize()
         ) {
-            val viewModel: PassiveDataViewModel = hiltViewModel()
-
-            val calories by viewModel.caloriesValue.collectAsState()  // 실시간 칼로리 데이터 수집
-            val goalCalories = 2000.0  //목표 칼로리 설정
-
-            Column {
-                CalorieProgressBar(
-                    calories = calories,
-                    goalCalories = goalCalories
-                )
-            }
-
-            // 권한 요청 처리
-            if (!permissionState.status.isGranted) {
-                LaunchedEffect(Unit) {
-                    permissionState.launchPermissionRequest() //manifest에 권한 추가 안 돼있으면 요청되지 않음
-                }
-            }
+            RenderUI(uiState, user, mainPet, calories, goalCalories)
         }
+    }
+}
+
+/** UI 렌더링 **/
+@Composable
+fun RenderUI(
+    uiState: UiState,
+    user: User?,
+    mainPet: MainPet?,
+    calories: Double,
+    goalCalories: Double
+) {
+    when (uiState) {
+        UiState.Startup -> LoadingScreen()
+        UiState.Supported -> RenderSupportedUI(user, mainPet, calories, goalCalories)
+        UiState.NotSupported -> NotSupportedScreen()
+    }
+}
+
+/** Supported 상태 UI 렌더링 **/
+@Composable
+fun RenderSupportedUI(
+    user: User?,
+    mainPet: MainPet?,
+    calories: Double,
+    goalCalories: Double
+) {
+    if (user != null && mainPet != null) {
+        CalorieProgressBar(
+            calories = calories,
+            goalCalories = goalCalories,
+            mainPet = mainPet,
+            modifier = Modifier.fillMaxSize()
+        )
+    } else {
+        LoadingScreen()
+    }
+}
+
+/** 목표 칼로리 계산 **/
+private fun calculateGoalCalories(user: User?): Double {
+    return user?.purposeCalorie?.toDouble() ?: 1000.0
+}
+
+/** 로딩 화면 **/
+@Composable
+fun LoadingScreen() {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        CircularProgressIndicator()
     }
 }
