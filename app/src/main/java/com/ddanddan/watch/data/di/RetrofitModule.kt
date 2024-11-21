@@ -20,8 +20,10 @@ object RetrofitModule {
     @Singleton
     fun provideOkHttpClient(
         authorizationInterceptor: AuthorizationInterceptor,
+//        watchTokenAuthenticator: WatchTokenAuthenticator
     ): OkHttpClient = OkHttpClient.Builder()
         .addInterceptor(authorizationInterceptor)
+//        .authenticator(watchTokenAuthenticator)
         .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
         .build()
 

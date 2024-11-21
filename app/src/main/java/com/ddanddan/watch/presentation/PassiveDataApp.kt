@@ -32,7 +32,6 @@ fun PassiveDataApp(viewModel: PassiveDataViewModel = hiltViewModel()) {
     }
 }
 
-/** UI 렌더링 **/
 @Composable
 fun RenderUI(
     uiState: UiState,
@@ -42,13 +41,15 @@ fun RenderUI(
     goalCalories: Double
 ) {
     when (uiState) {
-        UiState.Startup -> LoadingScreen()
+        UiState.Loading -> LoadingScreen()
         UiState.Supported -> RenderSupportedUI(user, mainPet, calories, goalCalories)
         UiState.NotSupported -> NotSupportedScreen()
+        is UiState.Error -> {
+            //todo - 예외 처리
+        }
     }
 }
 
-/** Supported 상태 UI 렌더링 **/
 @Composable
 fun RenderSupportedUI(
     user: User?,
@@ -68,12 +69,10 @@ fun RenderSupportedUI(
     }
 }
 
-/** 목표 칼로리 계산 **/
 private fun calculateGoalCalories(user: User?): Double {
     return user?.purposeCalorie?.toDouble() ?: 1000.0
 }
 
-/** 로딩 화면 **/
 @Composable
 fun LoadingScreen() {
     Box(
