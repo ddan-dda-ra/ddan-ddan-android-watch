@@ -8,4 +8,9 @@ interface PassiveDataRepository {
 
     val latestCalories: Flow<Double>
     suspend fun storeLatestCalories(calories: Double)
+
+    val totalCalories: Flow<Double>
+    suspend fun getCaloriesToSend(): Double?
+
+    val calorieCollectedSignal: Flow<Unit>
 }
