@@ -6,6 +6,7 @@ import androidx.health.services.client.data.DataPointContainer
 import androidx.health.services.client.data.DataType
 import androidx.health.services.client.data.IntervalDataPoint
 import com.ddanddan.watch.domain.repository.PassiveDataRepository
+import com.ddanddan.watch.util.WatchToPhoneUtils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.runBlocking
 import timber.log.Timber
@@ -35,6 +36,8 @@ class PassiveDataService : PassiveListenerService() {
 
             runBlocking {
                 passiveDataRepository.storeLatestCalories(calories)
+
+                WatchToPhoneUtils.checkAndSendData(this@PassiveDataService, calories)
             }
         }
     }
