@@ -75,7 +75,7 @@ class PassiveDataViewModel @Inject constructor(
             .onStart { _uiState.value = UiState.Loading }
             .catch { e ->
                 Timber.e("Failed to load user or pet data: ${e.message}")
-                _uiState.value = UiState.NotSupported
+                _uiState.value = UiState.Error(e.message.toString())
             }
             .collect { (user, mainPet) ->
                 _userState.value = user
