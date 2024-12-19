@@ -8,7 +8,9 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -23,15 +25,14 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.wear.compose.material.MaterialTheme
@@ -65,47 +66,41 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun MyApp() {
     val context = LocalContext.current
-    val permission = Manifest.permission.ACTIVITY_RECOGNITION //manifest에 미추가 시 요청되지 않음
-    val permissionGrantedState = rememberPermissionState(context, permission)
+    val permission = Manifest.permission.ACTIVITY_RECOGNITION
+    val permissionGranted = remember { mutableStateOf(checkPermission(context, permission)) }
 
-    MonitorPermissionStatus(context, permission, permissionGrantedState)
+    val permissionLauncher =
+        rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+            permissionGranted.value = isGranted
+        }
+
+    // 앱 진입 시 권한이 없으면 요청
+    LaunchedEffect(Unit) {
+        if (!permissionGranted.value) {
+            permissionLauncher.launch(permission)
+        }
+    }
 
     RenderUI(
-        permissionGrantedState = permissionGrantedState,
+        permissionGranted = permissionGranted.value,
         onGoToSettings = { openAppSettings(context) }
     )
 }
 
-/** 권한 상태 관리 **/
-@Composable
-fun rememberPermissionState(context: Context, permission: String): MutableState<Boolean> {
-    return remember {
-        mutableStateOf(
-            ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED
-        )
-    }
-}
-
-/** 설정 화면 이동 후 권한 상태 모니터링 **/
-@Composable
-fun MonitorPermissionStatus(context: Context, permission: String, permissionGrantedState: MutableState<Boolean>) {
-    LaunchedEffect(Unit) {
-        snapshotFlow {
-            ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED
-        }.collect { granted ->
-            permissionGrantedState.value = granted
-        }
-    }
+fun checkPermission(context: Context, permission: String): Boolean {
+    return ContextCompat.checkSelfPermission(
+        context,
+        permission
+    ) == PackageManager.PERMISSION_GRANTED
 }
 
 @Composable
 fun RenderUI(
-    permissionGrantedState: MutableState<Boolean>,
+    permissionGranted: Boolean,
     onGoToSettings: () -> Unit
 ) {
     when {
-        // 권한이 이미 허용된 경우
-        permissionGrantedState.value -> {
+        permissionGranted -> {
             Surface(
                 modifier = Modifier.fillMaxSize(),
                 color = DDanDDanColorPalette.current.color_background
@@ -114,24 +109,17 @@ fun RenderUI(
             }
         }
 
-        // 권한이 허용되지 않은 경우
         else -> {
             PermissionScreen(onGoToSettings)
         }
     }
 }
 
-/** 권한 설정 열기 **/
-fun openAppSettings(context: Context) {
-    val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-        data = Uri.fromParts("package", context.packageName, null)
-    }
-    context.startActivity(intent)
-}
-
-/** 권한 요청 화면 **/
+/** 권한 요청 및 설정 이동 화면 **/
 @Composable
-fun PermissionScreen(onGoToSettings: () -> Unit) {
+fun PermissionScreen(
+    onGoToSettings: () -> Unit
+) {
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
@@ -146,13 +134,20 @@ fun PermissionScreen(onGoToSettings: () -> Unit) {
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(16.dp)
             )
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(10.dp))
+
             PermissionChip(onClick = onGoToSettings)
         }
     }
 }
 
-/** 설정 이동 버튼 (Chip 스타일) **/
+fun openAppSettings(context: Context) {
+    val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+        data = Uri.fromParts("package", context.packageName, null)
+    }
+    context.startActivity(intent)
+}
+
 @Composable
 fun PermissionChip(onClick: () -> Unit) {
     Surface(
@@ -181,3 +176,12 @@ fun PermissionChip(onClick: () -> Unit) {
     }
 }
 
+@Preview(showBackground = true, name = "Permission Screen Preview")
+@Composable
+fun PermissionScreenPreview() {
+    DDanDDanTheme(darkTheme = true) {
+        PermissionScreen(
+            onGoToSettings = { /* for Preview */ }
+        )
+    }
+}
