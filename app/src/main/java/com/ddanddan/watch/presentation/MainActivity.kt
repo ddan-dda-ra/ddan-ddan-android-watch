@@ -35,15 +35,24 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
 import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.Text
 import com.ddanddan.ddanddan.R
 import com.ddanddan.watch.presentation.service.PassiveDataService
 import com.ddanddan.watch.presentation.theme.DDanDDanTheme
+import com.ddanddan.watch.util.PreferencesKeys
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.map
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    @Inject
+    lateinit var dataStore: DataStore<Preferences>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,7 +61,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             DDanDDanTheme(darkTheme = true) {
-                MyApp()
+                MyApp(dataStore)
             }
         }
     }
@@ -64,10 +73,12 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun MyApp() {
+fun MyApp(dataStore: DataStore<Preferences>) {
     val context = LocalContext.current
     val permission = Manifest.permission.ACTIVITY_RECOGNITION
+
     val permissionGranted = remember { mutableStateOf(checkPermission(context, permission)) }
+    val accessToken = remember { mutableStateOf<String?>(null) }
 
     val permissionLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
@@ -79,10 +90,16 @@ fun MyApp() {
         if (!permissionGranted.value) {
             permissionLauncher.launch(permission)
         }
+
+        val token = dataStore.data
+            .map { preferences -> preferences[PreferencesKeys.ACCESS_TOKEN_KEY] }
+            .firstOrNull()
+        accessToken.value = token
     }
 
     RenderUI(
         permissionGranted = permissionGranted.value,
+        accessToken = accessToken.value,
         onGoToSettings = { openAppSettings(context) }
     )
 }
@@ -97,10 +114,19 @@ fun checkPermission(context: Context, permission: String): Boolean {
 @Composable
 fun RenderUI(
     permissionGranted: Boolean,
+    accessToken: String?,
     onGoToSettings: () -> Unit
 ) {
     when {
-        permissionGranted -> {
+        permissionGranted.not() -> {
+            PermissionScreen(onGoToSettings)
+        }
+
+        permissionGranted && accessToken.isNullOrEmpty() -> {
+            NoAccessTokenScreen()
+        }
+
+        permissionGranted && !accessToken.isNullOrEmpty() -> {
             Surface(
                 modifier = Modifier.fillMaxSize(),
                 color = DDanDDanColorPalette.current.color_background
@@ -108,12 +134,9 @@ fun RenderUI(
                 PassiveDataApp()
             }
         }
-
-        else -> {
-            PermissionScreen(onGoToSettings)
-        }
     }
 }
+
 
 /** 권한 요청 및 설정 이동 화면 **/
 @Composable
