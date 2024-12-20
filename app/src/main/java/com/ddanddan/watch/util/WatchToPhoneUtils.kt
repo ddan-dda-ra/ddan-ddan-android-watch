@@ -66,4 +66,39 @@ object WatchToPhoneUtils {
             }
         )
     }
+
+    /**
+     * 토큰 갱신 요청 전송
+     */
+    private fun sendTokenRefreshRequest(context: Context) = context.run {
+        val dataClient = Wearable.getDataClient(this)
+
+        val putDataReq = PutDataMapRequest.create("/refresh_token_request").run {
+            dataMap.putLong("timestamp", System.currentTimeMillis())
+            asPutDataRequest()
+        }
+
+        dataClient.putDataItem(putDataReq)
+            .addOnSuccessListener {
+                Timber.d("Token refresh request sent successfully.")
+            }
+            .addOnFailureListener { e ->
+                Timber.e("Failed to send token refresh request: ${e.message}")
+            }
+    }
+
+    /**
+     * 연결 상태 확인 후 토큰 갱신 요청
+     */
+    fun checkAndSendTokenRefresh(context: Context) {
+        checkWatchConnection(
+            context,
+            onConnected = {
+                sendTokenRefreshRequest(context)
+            },
+            onNotConnected = {
+                Timber.d("Phone not connected. Token refresh request cannot be sent.")
+            }
+        )
+    }
 }
