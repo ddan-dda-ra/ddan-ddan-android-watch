@@ -1,5 +1,6 @@
 package com.ddanddan.watch.presentation.service
 
+import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
@@ -28,16 +29,18 @@ class DataLayerListenerService : WearableListenerService() {
 
 
     override fun onDataChanged(dataEvents: DataEventBuffer) {
+        Log.d("DataLayerListenerService", "onDataChanged triggered")
         for (event in dataEvents) {
             if (event.type == DataEvent.TYPE_CHANGED && event.dataItem.uri.path == "/access_token") {
                 val dataMap = DataMapItem.fromDataItem(event.dataItem).dataMap
                 val token = dataMap.getString("accessToken")
-                Timber.tag("DataLayerListenerService").d("Received access token: %s", token)
+                Log.d("DataLayerListenerService", "Received access token: $token")
 
                 saveAccessToken(token)
             }
         }
     }
+
 
     private fun saveAccessToken(token: String?) {
         token?.let {

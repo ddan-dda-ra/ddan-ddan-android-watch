@@ -25,6 +25,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -37,15 +39,13 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.Text
 import com.ddanddan.ddanddan.R
 import com.ddanddan.watch.presentation.service.PassiveDataService
 import com.ddanddan.watch.presentation.theme.DDanDDanTheme
-import com.ddanddan.watch.util.PreferencesKeys
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -61,7 +61,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             DDanDDanTheme(darkTheme = true) {
-                MyApp(dataStore)
+                MyApp()
             }
         }
     }
@@ -73,12 +73,12 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun MyApp(dataStore: DataStore<Preferences>) {
+fun MyApp(viewModel: MainViewModel = hiltViewModel()) {
     val context = LocalContext.current
     val permission = Manifest.permission.ACTIVITY_RECOGNITION
 
     val permissionGranted = remember { mutableStateOf(checkPermission(context, permission)) }
-    val accessToken = remember { mutableStateOf<String?>(null) }
+    val accessToken by viewModel.accessTokenFlow.collectAsState()
 
     val permissionLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
@@ -90,19 +90,15 @@ fun MyApp(dataStore: DataStore<Preferences>) {
         if (!permissionGranted.value) {
             permissionLauncher.launch(permission)
         }
-
-        val token = dataStore.data
-            .map { preferences -> preferences[PreferencesKeys.ACCESS_TOKEN_KEY] }
-            .firstOrNull()
-        accessToken.value = token
     }
 
     RenderUI(
         permissionGranted = permissionGranted.value,
-        accessToken = accessToken.value,
+        accessToken = accessToken,
         onGoToSettings = { openAppSettings(context) }
     )
 }
+
 
 fun checkPermission(context: Context, permission: String): Boolean {
     return ContextCompat.checkSelfPermission(

@@ -1,6 +1,7 @@
 package com.ddanddan.watch.presentation.service
 
 import android.content.ContentValues.TAG
+import android.util.Log
 import androidx.health.services.client.PassiveListenerService
 import androidx.health.services.client.data.DataPointContainer
 import androidx.health.services.client.data.DataType
@@ -32,7 +33,7 @@ class PassiveDataService : PassiveListenerService() {
         val caloriesData = dataPoints.getData(DataType.CALORIES_DAILY)
 
         caloriesData.latestCalories()?.let { calories ->
-            Timber.tag("PassiveDataService").d("Received calories data: %s", calories)
+            Log.d("PassiveDataService", "Received calories data: ${calories}")
 
             runBlocking {
                 passiveDataRepository.storeLatestCalories(calories)

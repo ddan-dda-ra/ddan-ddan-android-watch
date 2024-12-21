@@ -1,0 +1,24 @@
+package com.ddanddan.watch.presentation
+
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.ddanddan.watch.util.PreferencesKeys
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
+import javax.inject.Inject
+
+@HiltViewModel
+class MainViewModel @Inject constructor(
+    private val dataStore: DataStore<Preferences>
+) : ViewModel() {
+
+    val accessTokenFlow: StateFlow<String?> = dataStore.data
+        .map { preferences -> preferences[PreferencesKeys.ACCESS_TOKEN_KEY] }
+        .stateIn(viewModelScope, SharingStarted.Lazily, null)
+}
+

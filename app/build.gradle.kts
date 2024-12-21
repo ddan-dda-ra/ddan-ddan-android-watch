@@ -23,12 +23,15 @@ android {
             "BASE_URL",
             gradleLocalProperties(rootDir).getProperty("base.url"),
         )
+    }
 
-        buildConfigField(
-            "String",
-            "AES_KEY",
-            gradleLocalProperties(rootDir).getProperty("AES_KEY"),
-        )
+    signingConfigs {
+        getByName("debug") {
+            storeFile = file("ddanddan_debug.keystore")
+            storePassword = gradleLocalProperties(rootDir).getProperty("storePassword")
+            keyAlias = gradleLocalProperties(rootDir).getProperty("keyAlias")
+            keyPassword = gradleLocalProperties(rootDir).getProperty("keyPassword")
+        }
     }
 
     buildTypes {
