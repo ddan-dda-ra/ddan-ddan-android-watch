@@ -17,8 +17,8 @@ class MainViewModel @Inject constructor(
     private val dataStore: DataStore<Preferences>
 ) : ViewModel() {
 
-    val accessTokenFlow: StateFlow<String?> = dataStore.data
-        .map { preferences -> preferences[PreferencesKeys.ACCESS_TOKEN_KEY] }
+    val tokenFlow: StateFlow<String?> = dataStore.data
+        .map { preferences -> preferences[PreferencesKeys.ACCESS_TOKEN_KEY] } //todo - 추후에 이 부분이 토큰 갱신 때 문제 일으키진 않을지 확인 필요
         .stateIn(viewModelScope, SharingStarted.Lazily, null)
 }
 

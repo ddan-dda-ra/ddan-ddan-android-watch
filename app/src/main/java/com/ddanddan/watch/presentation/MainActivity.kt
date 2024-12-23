@@ -1,8 +1,10 @@
 package com.ddanddan.watch.presentation
 
 import android.Manifest
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
@@ -29,6 +31,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -40,12 +43,15 @@ import androidx.core.content.ContextCompat
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.Text
 import com.ddanddan.ddanddan.R
 import com.ddanddan.watch.presentation.service.PassiveDataService
 import com.ddanddan.watch.presentation.theme.DDanDDanTheme
+import com.ddanddan.watch.util.PreferencesKeys
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -54,21 +60,65 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var dataStore: DataStore<Preferences>
 
+    private lateinit var tokenExpiredReceiver: BroadcastReceiver
+
+    private var isTokenExpired by mutableStateOf(false)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        initBroadcastReceiver()
         startPassiveDataService()
 
         setContent {
             DDanDDanTheme(darkTheme = true) {
-                MyApp()
+                val tokenFlow = dataStore.data
+                    .map { preferences -> preferences[PreferencesKeys.ACCESS_TOKEN_KEY] }
+                    .collectAsState(initial = null)
+
+                LaunchedEffect(tokenFlow.value) {
+                    if (tokenFlow.value != null) {
+                        isTokenExpired = false
+                    }
+                }
+
+                if (isTokenExpired) {
+                    RequireLoginScreen()
+                } else {
+                    MyApp()
+                }
             }
         }
+    }
+
+    private fun initBroadcastReceiver() {
+        tokenExpiredReceiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent?) {
+                if (intent?.action == "com.ddanddan.ddanddan.TOKEN_EXPIRED") {
+                    handleTokenExpired()
+                }
+            }
+        }
+
+        LocalBroadcastManager.getInstance(this)
+            .registerReceiver(
+                tokenExpiredReceiver,
+                IntentFilter("com.ddanddan.ddanddan.TOKEN_EXPIRED")
+            )
     }
 
     private fun startPassiveDataService() {
         val serviceIntent = Intent(this, PassiveDataService::class.java)
         startService(serviceIntent)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(tokenExpiredReceiver)
+    }
+
+    private fun handleTokenExpired() {
+        isTokenExpired = true
     }
 }
 
@@ -78,7 +128,7 @@ fun MyApp(viewModel: MainViewModel = hiltViewModel()) {
     val permission = Manifest.permission.ACTIVITY_RECOGNITION
 
     val permissionGranted = remember { mutableStateOf(checkPermission(context, permission)) }
-    val accessToken by viewModel.accessTokenFlow.collectAsState()
+    val accessToken by viewModel.tokenFlow.collectAsState()
 
     val permissionLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
@@ -98,7 +148,6 @@ fun MyApp(viewModel: MainViewModel = hiltViewModel()) {
         onGoToSettings = { openAppSettings(context) }
     )
 }
-
 
 fun checkPermission(context: Context, permission: String): Boolean {
     return ContextCompat.checkSelfPermission(
@@ -194,6 +243,20 @@ fun PermissionChip(onClick: () -> Unit) {
         }
     }
 }
+
+@Composable
+fun RequireLoginScreen() {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = "휴대폰에서 로그인을 다시 해주세요",
+            textAlign = TextAlign.Center
+        )
+    }
+}
+
 
 @Preview(showBackground = true, name = "Permission Screen Preview")
 @Composable
