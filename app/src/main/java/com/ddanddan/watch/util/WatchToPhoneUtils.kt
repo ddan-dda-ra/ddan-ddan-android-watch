@@ -88,7 +88,7 @@ object WatchToPhoneUtils {
     private fun sendTokenExpired(context: Context) = context.run {
         val dataClient = Wearable.getDataClient(this)
 
-        val putDataReq = PutDataMapRequest.create("/refresh_token_request").run {
+        val putDataReq = PutDataMapRequest.create("/refresh_token_expired").run {
             dataMap.putLong("timestamp", System.currentTimeMillis())
             asPutDataRequest()
         }
