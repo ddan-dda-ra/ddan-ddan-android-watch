@@ -30,26 +30,28 @@ class DataLayerListenerService : WearableListenerService() {
 
     override fun onDataChanged(dataEvents: DataEventBuffer) {
         Log.d("DataLayerListenerService", "onDataChanged triggered")
-        for (event in dataEvents) {
-            if (event.type == DataEvent.TYPE_CHANGED && event.dataItem.uri.path == "/access_token") {
-                val dataMap = DataMapItem.fromDataItem(event.dataItem).dataMap
-                val token = dataMap.getString("accessToken")
-                Log.d("DataLayerListenerService", "Received access token: $token")
 
-                saveAccessToken(token)
+        for (event in dataEvents) {
+            if (event.type == DataEvent.TYPE_CHANGED && event.dataItem.uri.path == "/token") {
+                val dataMap = DataMapItem.fromDataItem(event.dataItem).dataMap
+                val accessToken = dataMap.getString("accessToken")
+                val refreshToken = dataMap.getString("refreshToken")
+
+                saveToken(accessToken = accessToken, refreshToken = refreshToken)
             }
         }
     }
 
 
-    private fun saveAccessToken(token: String?) {
-        token?.let {
+    private fun saveToken(accessToken: String?, refreshToken: String?) {
+        if (!accessToken.isNullOrEmpty() && !refreshToken.isNullOrEmpty())
+
             CoroutineScope(Dispatchers.IO).launch {
                 dataStore.edit { preferences ->
-                    preferences[PreferencesKeys.ACCESS_TOKEN_KEY] = it
+                    preferences[PreferencesKeys.ACCESS_TOKEN_KEY] = accessToken
+                    preferences[PreferencesKeys.REFRESH_TOKEN_KEY] = refreshToken
                 }
                 Timber.tag("DataLayerListenerService").d("Access token saved to DataStore")
             }
-        }
     }
 }
