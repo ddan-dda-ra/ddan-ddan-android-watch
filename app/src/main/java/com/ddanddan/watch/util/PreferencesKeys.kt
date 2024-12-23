@@ -9,4 +9,5 @@ object PreferencesKeys {
     val LATEST_CALORIES = doublePreferencesKey("latest_calories")
     val TOTAL_CALORIES = doublePreferencesKey("total_calories")
     val ACCESS_TOKEN_KEY = stringPreferencesKey("access_token")
+    val REFRESH_TOKEN_KEY = stringPreferencesKey("refresh_token")
 }
