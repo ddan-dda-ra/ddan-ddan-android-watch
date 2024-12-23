@@ -32,7 +32,7 @@ class AuthorizationInterceptor @Inject constructor(
         }
 
         val request = chain.request().newBuilder()
-            .addHeader("Authorization", "Bearer ${accessToken ?: ""}")
+            .addHeader("Authorization", accessToken ?: "")
             .build()
 
         val response = chain.proceed(request)
@@ -44,7 +44,7 @@ class AuthorizationInterceptor @Inject constructor(
             // 갱신된 토큰으로 다시 요청
             val newRequest = request.newBuilder()
                 .removeHeader("Authorization")
-                .addHeader("Authorization", "Bearer $newAccessToken")
+                .addHeader("Authorization", newAccessToken)
                 .build()
 
             return chain.proceed(newRequest)
@@ -85,8 +85,10 @@ class AuthorizationInterceptor @Inject constructor(
                 // DataStore에 갱신된 토큰 저장
                 runBlocking {
                     dataStore.edit { preferences ->
-                        preferences[PreferencesKeys.ACCESS_TOKEN_KEY] = responseToken.accessToken //todo - bearer 체크
-                        preferences[PreferencesKeys.REFRESH_TOKEN_KEY] = responseToken.refreshToken
+                        preferences[PreferencesKeys.ACCESS_TOKEN_KEY] =
+                            "Bearer ${responseToken.accessToken}" //todo - bearer 체크
+                        preferences[PreferencesKeys.REFRESH_TOKEN_KEY] =
+                            "Bearer ${responseToken.refreshToken}"
                     }
                 }
 
