@@ -128,9 +128,9 @@ class PassiveDataViewModel @Inject constructor(
 }
 
 sealed class UiState {
-    data object Loading : UiState()
-    data object NotSupported : UiState()
-    data object Supported : UiState()
+    object Loading : UiState()
+    object NotSupported : UiState()
+    object Supported : UiState()
     data class Error(val message: String) : UiState()
 }
 
