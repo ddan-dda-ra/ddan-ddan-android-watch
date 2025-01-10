@@ -63,6 +63,13 @@ android {
     hilt {
         enableAggregatingTask = false
     }
+
+    publishing {
+        singleVariant("release") {
+            withSourcesJar()
+            withJavadocJar()
+        }
+    }
 }
 
 dependencies {
